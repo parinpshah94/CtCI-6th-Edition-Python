@@ -1,8 +1,4 @@
-import pytest
-
-
-class NoMagicIndexExistsError(RuntimeError):
-    pass
+NOT_FOUND = -1
 
 
 def magic_index(array, min_index=0, max_index=None):
@@ -10,7 +6,7 @@ def magic_index(array, min_index=0, max_index=None):
         max_index = len(array) - 1
 
     if max_index < min_index:
-        raise NoMagicIndexExistsError("No magic index exists")
+        return NOT_FOUND
 
     mid = (max_index + min_index) // 2
     if array[mid] == mid:
@@ -26,7 +22,7 @@ def magic_index_non_distinct(array, min_index=0, max_index=None):
         max_index = len(array) - 1
 
     if max_index < min_index:
-        return -1
+        return NOT_FOUND
 
     mid = (max_index + min_index) // 2
     if array[mid] == mid:
@@ -43,36 +39,26 @@ def magic_index_non_distinct(array, min_index=0, max_index=None):
     return magic_index_non_distinct(array, right_index, max_index)
 
 
+test_cases = [
+    ([-14, -12, 0, 1, 2, 5, 9, 10, 23, 25], 5),
+    ([-14, -12, 0, 1, 2, 7, 9, 10, 23, 25], NOT_FOUND),
+    ([0, 1, 2, 3, 4], 2),
+    ([], NOT_FOUND),
+]
+
+followup_test_cases = test_cases + [
+    ([-10, -5, 2, 2, 2, 3, 4, 7, 9, 12, 13], 2),
+]
+
+
 def test_magic_index():
     for array, expected in test_cases:
-        if isinstance(expected, int):
-            assert magic_index(array) == expected
-        else:
-            with pytest.raises(expected):
-                magic_index(array)
+        assert magic_index(array) == expected
 
 
 def test_magic_index_non_distinct():
     for array, expected in followup_test_cases:
-        if isinstance(expected, int):
-            assert magic_index_non_distinct(array) == expected
-        else:
-            with pytest.raises(expected):
-                magic_index_non_distinct(array)
-
-
-test_cases = [
-    ([-14, -12, 0, 1, 2, 5, 9, 10, 23, 25], 5),
-    ([-14, -12, 0, 1, 2, 7, 9, 10, 23, 25], NoMagicIndexExistsError),
-    ([0, 1, 2, 3, 4], 2),
-    ([], NoMagicIndexExistsError),
-]
-
-followup_test_cases = [
-    ([-10, -5, 2, 2, 2, 3, 4, 7, 9, 12, 13], 2),
-    ([-14, -12, 0, 1, 2, 5, 9, 10, 23, 25], 5),
-    ([0, 1, 2, 3, 4], 2),
-]
+        assert magic_index_non_distinct(array) == expected
 
 
 if __name__ == "__main__":
